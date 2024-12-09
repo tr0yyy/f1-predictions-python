@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 
-from src.modules.DataProvider.openF1Client.OpenF1Client import OpenF1Client
+from modules.DataProvider.openF1Client.OpenF1Client import OpenF1Client
 
 router = Blueprint("router", __name__, url_prefix="/api")
 

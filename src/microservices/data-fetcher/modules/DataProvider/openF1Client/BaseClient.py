@@ -1,4 +1,4 @@
-from src.modules.restClient.RestClient import RestClient
+from modules.restClient import RestClient
 
 
 class BaseClient:

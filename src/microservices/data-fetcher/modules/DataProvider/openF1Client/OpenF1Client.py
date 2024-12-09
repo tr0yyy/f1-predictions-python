@@ -1,5 +1,5 @@
-from src.modules.DataProvider.openF1Client.ModelFactory import ModelFactory
-from src.modules.restClient.RestClient import RestClient
+from modules.DataProvider.openF1Client.ModelFactory import ModelFactory
+from modules.restClient.RestClient import RestClient
 
 
 class OpenF1Client:
