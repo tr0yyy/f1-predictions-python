@@ -1,3 +1,7 @@
+from dataclasses import dataclass
+
+
+@dataclass
 class Position:
     def __init__(self, date, driver_number, meeting_key, position, session_key):
         self.date = date

@@ -1,3 +1,7 @@
+from dataclasses import dataclass
+
+
+@dataclass
 class Meeting:
     def __init__(self, circuit_key, circuit_short_name, country_code, country_key, country_name, date_start,
                  gmt_offset, location, meeting_key, meeting_name, meeting_official_name, year):

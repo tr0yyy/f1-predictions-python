@@ -1,0 +1,43 @@
+version: '3.8'
+
+networks:
+  bridged_network:
+    driver: bridge
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: password
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - bridged_network
+
+  mongodb-data-fetcher:
+    image: mongo:latest
+    container_name: mongodb-data-fetcher
+    ports:
+      - "27017:27017"
+    volumes:
+      - /var/lib/mongodb-data:/data/db
+    networks:
+      - bridged_network
+
+  data-fetcher:
+    build:
+      context: src/microservices/data-fetcher
+      dockerfile: Dockerfile
+    container_name: data-fetcher
+    environment:
+      RABBITMQ_URL: "amqp://admin:password@rabbitmq:5672"
+      RABBITMQ_QUEUE: "f1.data.fetcher"
+      MONGO_URL: "mongodb://mongodb:27017"
+    networks:
+      - bridged_network
+    depends_on:
+      - rabbitmq
+      - mongodb-data-fetcher

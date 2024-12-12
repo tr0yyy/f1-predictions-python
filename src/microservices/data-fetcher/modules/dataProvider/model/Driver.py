@@ -1,3 +1,7 @@
+from dataclasses import dataclass
+
+
+@dataclass
 class Driver:
     def __init__(self, broadcast_name, country_code, driver_number, first_name, full_name,
                  headshot_url, last_name, meeting_key, name_acronym, session_key, team_colour, team_name):
@@ -13,3 +17,4 @@ class Driver:
         self.session_key = session_key
         self.team_colour = team_colour
         self.team_name = team_name
+

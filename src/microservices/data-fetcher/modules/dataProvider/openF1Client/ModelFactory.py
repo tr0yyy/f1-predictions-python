@@ -1,4 +1,4 @@
-from modules.DataProvider.openF1Client.BaseClient import BaseClient
+from modules.dataProvider.openF1Client.BaseClient import BaseClient
 from modules.restClient.RestClient import RestClient
 
 
