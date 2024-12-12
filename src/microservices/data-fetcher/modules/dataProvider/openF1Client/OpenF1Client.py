@@ -1,4 +1,4 @@
-from modules.DataProvider.openF1Client.ModelFactory import ModelFactory
+from modules.dataProvider.openF1Client.ModelFactory import ModelFactory
 from modules.restClient.RestClient import RestClient
 
 
