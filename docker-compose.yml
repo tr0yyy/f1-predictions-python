@@ -23,7 +23,7 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - /var/lib/mongodb-data:/data/db
+      - /var/lib/mongodb-data-fetcher:/data/db
     networks:
       - bridged_network
 
@@ -32,12 +32,38 @@ services:
       context: src/microservices/data-fetcher
       dockerfile: Dockerfile
     container_name: data-fetcher
+    ports:
+      - "8000:8000"
     environment:
       RABBITMQ_URL: "amqp://admin:password@rabbitmq:5672"
       RABBITMQ_QUEUE: "f1.data.fetcher"
-      MONGO_URL: "mongodb://mongodb:27017"
+      MONGO_URL: "mongodb://mongodb-data-fetcher:27017"
     networks:
       - bridged_network
     depends_on:
       - rabbitmq
       - mongodb-data-fetcher
+
+  mongodb-race-simulator:
+    image: mongo:latest
+    container_name: mongodb-race-simulator
+    ports:
+      - "27018:27017"
+    volumes:
+      - /var/lib/mongodb-race-simulator:/data/db
+    networks:
+      - bridged_network
+
+  race-simulator:
+    build:
+      context: src/microservices/race-simulator
+      dockerfile: Dockerfile
+    container_name: race-simulator
+    ports:
+      - "8002:8002"
+    environment:
+      MONGO_URL: "mongodb://mongodb-race-simulator:27017"
+    networks:
+      - bridged_network
+    depends_on:
+      - mongodb-race-simulator

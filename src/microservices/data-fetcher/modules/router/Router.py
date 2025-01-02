@@ -36,6 +36,7 @@ async def get_sessions():
 
 
 def check_resync(args):
+    args = normalize_args(args)
     force_resync = args.get("force_resync", False)
     args = {k: v for k, v in args.items() if k != "force_resync"}
     return args, force_resync
@@ -48,3 +49,13 @@ async def process_request(model, args, repository):
         await MqProcessor.publish_task(Task(model=model, params=args))
         return response_error("Data is being fetched. Please try again later.")
     return response_ok(cached_data)
+
+
+def normalize_args(args):
+    # Convert values to numbers if possible
+    for key in args:
+        try:
+            args[key] = int(args[key])
+        except ValueError:
+            pass
+    return args

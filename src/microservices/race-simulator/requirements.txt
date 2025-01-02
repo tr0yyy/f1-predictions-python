@@ -1,0 +1,9 @@
+requests
+aiohttp
+asyncio
+flask[async]
+pika
+aio_pika
+pymongo
+dataclasses
+hypercorn
