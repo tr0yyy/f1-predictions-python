@@ -11,6 +11,9 @@ class BaseRepository:
     def get(self, query):
         return self.collection.find(query).to_list()
 
+    def insert_one(self, value):
+        return self.collection.insert_one(value)
+
     def insert(self, values):
         return self.collection.insert_many(values)
 

@@ -2,11 +2,11 @@ import json
 import importlib
 import aio_pika
 
-from modules.dataProvider.model.Task import Task
+from modules.dataProvider.model.Task import Task, TaskStatus
 from modules.dataProvider.openF1Client.OpenF1Client import OpenF1Client
 from modules.configLoader.ConfigLoader import config
 from modules.dataProvider.repository.RepositoryFactory import RepositoryFactory
-from modules.mongoClient.Mongo import Mongo
+from modules.dataProvider.repository.TaskRepository import TaskRepository
 from modules.rabbitMqClient.RabbitMqClient import RabbitMqClient
 
 
@@ -31,8 +31,10 @@ async def mq_processor_callback(message: aio_pika.IncomingMessage):
             for element in output:
                 instance = cls(**element)
                 repository.update_one(instance)
+            save_task(task)
         except Exception as e:
             print(f"Error processing message: {e}")
+            save_task(task, passed=False)
             pass
         finally:
             print(f"Message {decoded_message} ACK")
@@ -49,10 +51,20 @@ async def start_mq_processor():
     await client.consume_messages(config().rabbitmq_queue, mq_processor_callback)
 
 
-
 async def publish_task(task: Task):
     """
     Publish a task to the RabbitMQ queue
     """
     client = RabbitMqClient()
-    await client.publish_message(config().rabbitmq_queue, json.dumps(task, default=lambda k: k.__dict__))
+    await client.publish_message(config().rabbitmq_queue, json.dumps({'model': task.model, 'params': task.params}, default=lambda k: k.__dict__))
+
+
+def save_task(task, passed=True):
+    task = Task(
+        model=task.model,
+        params=task.params,
+        task_status=TaskStatus.COMPLETED.value if passed else TaskStatus.FAILED.value
+    )
+    del task.date_started
+    task_repository = TaskRepository()
+    task_repository.update_one(update=task)
