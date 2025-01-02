@@ -1,0 +1,7 @@
+{
+  "rabbitmq_url": "amqp://admin:password@172.25.89.192:5672/",
+  "rabbitmq_queue": "f1.race.simulator",
+  "mongo_url": "mongodb://172.25.89.192:27018/",
+  "predictions_url": "",
+  "data_fetcher_url": "http://172.25.89.192:8000"
+}
