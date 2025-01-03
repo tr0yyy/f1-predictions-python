@@ -13,6 +13,6 @@ class SessionRepository(BaseRepository):
             query={
                 'session_key': update.session_key
             }, update={
-                update
+                '$set': update.__dict__
             }, upsert=True
         )
