@@ -11,7 +11,6 @@ from modules.router.Router import router
 app = Flask(__name__)
 app.register_blueprint(router)
 CORS(app)
-app.config["SECRET_KEY"] = "SECRET_KEY"
 
 
 async def run_flask():

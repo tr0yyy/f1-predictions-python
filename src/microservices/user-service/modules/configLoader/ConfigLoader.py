@@ -6,9 +6,7 @@ CONFIG = None
 
 # for type hints
 class Config:
-    def __init__(self, rabbitmq_url=None, rabbitmq_queue=None, mongo_url=None):
-        self.rabbitmq_url = rabbitmq_url
-        self.rabbitmq_queue = rabbitmq_queue
+    def __init__(self, mongo_url=None):
         self.mongo_url = mongo_url
 
 
@@ -23,8 +21,6 @@ def config() -> Config:
             if env_value:
                 CONFIG[key] = env_value
     return Config(
-        rabbitmq_url=CONFIG['rabbitmq_url'],
-        rabbitmq_queue=CONFIG['rabbitmq_queue'],
         mongo_url=CONFIG['mongo_url']
     )
 

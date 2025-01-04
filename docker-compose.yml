@@ -68,6 +68,20 @@ services:
     depends_on:
       - mongodb-race-simulator
 
+  user-service:
+      build:
+        context: src/microservices/user-service
+        dockerfile: Dockerfile
+      container_name: user-service
+      ports:
+        - "8001:8001"
+      environment:
+        MONGO_URL: "mongodb://mongodb-data-fetcher:27017"
+      networks:
+        - bridged_network
+      depends_on:
+        - mongodb-race-simulator
+
   nginx:
     image: nginx:latest
     container_name: nginx-reverse-proxy
