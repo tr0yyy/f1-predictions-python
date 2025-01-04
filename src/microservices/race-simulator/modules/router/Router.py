@@ -11,11 +11,25 @@ router = Blueprint("router", __name__, url_prefix="/api")
 
 
 @router.route("/simulate", methods=["POST"])
-async def get_drivers():
+async def simulate():
     from flask import current_app
     data = request.get_json(force=True)
     return await process_request(current_app, data, SessionRepository())
 
+@router.route("/simulate/results", methods=["GET"])
+async def get_simulation_results():
+    session_key = request.args.get("session_key")
+
+    if not session_key:
+        return response_error("Session key required")
+
+    session_repo = SessionRepository()
+    results = session_repo.get(query={'session_key': session_key})
+
+    if not results:
+        return response_error(f"No simulation results found for session {session_key}.")
+
+    return response_ok(results)
 
 async def process_request(current_app, data, repository):
     cached_data = repository.get(query={'session_key': data['session_key']})
