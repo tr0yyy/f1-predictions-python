@@ -1,84 +1,70 @@
 import React, { useState, useEffect } from 'react';
 import DriversList from '../../components/DriversList/DriversList';
 import './Drivers.css';
+import DataProvider from "../../dataProvider/DataProvider.jsx";
+import {Dropdown, DropdownButton} from "react-bootstrap";
 
 const Drivers = () => {
     const [drivers, setDrivers] = useState([]);
     const [race, setRace] = useState(null);
+    const [races, setRaces] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [loadingDrivers, setLoadingDrivers] = useState(true);
 
     useEffect(() => {
-        const fetchRaceAndDrivers = async () => {
-            try {
-                const raceData = {
-                    location: 'Spa-Francorchamps',
-                    country_key: 16,
-                    country_code: 'BEL',
-                    country_name: 'Belgium',
-                    circuit_key: 7,
-                    circuit_short_name: 'Spa-Francorchamps',
-                    session_type: 'Race',
-                    session_name: 'Race',
-                    date_start: '2023-07-30T13:00:00+00:00',
-                    date_end: '2023-07-30T15:00:00+00:00',
-                    gmt_offset: '02:00:00',
-                    session_key: 9141,
-                    meeting_key: 1216,
-                    year: 2023,
-                };
+      const currentYear = localStorage.getItem('selectedYear')
+                        || (new Date().getFullYear() - 1);
 
-                const driverData = [
-                    {
-                        broadcast_name: 'M VERSTAPPEN',
-                        country_code: 'NED',
-                        driver_number: 1,
-                        first_name: 'Max',
-                        full_name: 'Max VERSTAPPEN',
-                        headshot_url:
-                            'https://www.formula1.com/content/dam/fom-website/drivers/M/MAXVER01_Max_Verstappen/maxver01.png.transform/1col/image.png',
-                        last_name: 'Verstappen',
-                        meeting_key: 1219,
-                        name_acronym: 'VER',
-                        session_key: 9158,
-                        team_colour: '3671C6',
-                        team_name: 'Red Bull Racing',
-                    },
-                    {
-                        broadcast_name: 'L HAMILTON',
-                        country_code: 'GBR',
-                        driver_number: 44,
-                        first_name: 'Lewis',
-                        full_name: 'Lewis HAMILTON',
-                        headshot_url:
-                            'https://www.formula1.com/content/dam/fom-website/drivers/L/LEWHAM01_Lewis_Hamilton/lewham01.png.transform/1col/image.png',
-                        last_name: 'Hamilton',
-                        meeting_key: 1219,
-                        name_acronym: 'HAM',
-                        session_key: 9158,
-                        team_colour: '00D2BE',
-                        team_name: 'Mercedes',
-                    },
-                ];
+      const fetchRaces = async () => {
+        const response = await DataProvider.dataFetcher.getSessions({
+          year: currentYear,
+          session_type: 'Race',
+          session_name: 'Race'
+        });
 
-                const enhancedDrivers = driverData.map((driver) => ({
-                    ...driver,
-                    headshot_url: driver.headshot_url.replace(
-                        '.transform/1col/image.png',
-                        ''
-                    ),
-                }));
+        const races = response.data;
+        setRaces(races);
+        if (races.length > 0) {
+          setRace(races[0]);
+        }
+      };
 
-                setRace(raceData);
-                setDrivers(enhancedDrivers);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchRaceAndDrivers();
+      fetchRaces();
     }, []);
+
+    useEffect(() => {
+      if (!race) return;
+      setLoadingDrivers(true);
+
+      const fetchDrivers = async () => {
+        const response = await DataProvider.dataFetcher.getDrivers({
+          session_key: race.session_key,
+        });
+        const drivers = response.data;
+
+        const enhancedDrivers = drivers.map((driver) => {
+          if (!driver.headshot_url) return driver;
+          return {
+            ...driver,
+            headshot_url: driver.headshot_url.replace(
+              '.transform/1col/image.png',
+              ''
+            ),
+          };
+        });
+
+        setDrivers(enhancedDrivers);
+        setLoadingDrivers(false);
+      };
+
+      fetchDrivers();
+    }, [race]);
+
+    useEffect(() => {
+      if (races.length && drivers.length) {
+        setLoading(false);
+      }
+    }, [races, drivers]);
 
     if (loading) {
         return <div className="loading">Loading...</div>;
@@ -86,6 +72,16 @@ const Drivers = () => {
 
     return (
         <div className="drivers-page">
+            <DropdownButton id="dropdown-basic-button" title="Select Race" variant={'secondary'}>
+              {races.map((r) => (
+                <Dropdown.Item
+                  key={r.session_key}
+                  onClick={() => setRace(r)}  // <-- Trigger setRace on click
+                >
+                  {`${r.circuit_short_name} - (${r.country_code})`}
+                </Dropdown.Item>
+              ))}
+            </DropdownButton>
             {race && (
                 <div className="race-details">
                     <h1>Current Race</h1>
@@ -96,7 +92,9 @@ const Drivers = () => {
                 </div>
             )}
 
-            <DriversList drivers={drivers} />
+            {loadingDrivers && <div className="loading">Loading...</div>}
+            {!loadingDrivers && <DriversList drivers={drivers} />}
+
         </div>
     );
 };

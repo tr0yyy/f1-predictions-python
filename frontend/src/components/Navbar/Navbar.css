@@ -1,5 +1,4 @@
 .navbar {
-    padding: 20px 0px;
     display: flex;
     align-items: center;
 }
@@ -14,7 +13,8 @@
     background-color: white; 
     opacity: 1.0;
     box-sizing: border-box; 
-    padding-bottom: 500px;
+    height: 100vh;
+    width: 25vh;
 }
 
 .navbar-list-item {
@@ -25,8 +25,15 @@
 .navbar-left .navbar-list-item {
     display: flex;
     flex-direction: column;
-    gap: 10px;
     align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    height: 100vh;
+}
+
+.navbar-left .navbar-list-item > #autentificare {
+  margin-top: auto;
+  margin-bottom: 20px;
 }
 
 .navbar-list-item a img {
@@ -40,15 +47,6 @@
 
 .navbar-list-item a.active img {
     border: 4px solid rgb(156, 7, 7);
-}
-
-.navbar-right {
-    display: flex;
-    align-items: center;
-    gap: 40px;
-    margin-left: auto; 
-    padding-left: 200px;
-    padding-right: 20px;
 }
 
 .navbar button {
@@ -73,7 +71,7 @@
     }
 
     .navbar-right {
-        padding-left: 80px; 
+        padding-left: 80px;
     }
 
     .navbar-left .navbar-list-item img {
