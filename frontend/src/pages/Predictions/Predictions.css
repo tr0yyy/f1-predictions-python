@@ -1,5 +1,5 @@
 .predictions-container {
-    margin-left: 250px;
+    margin-left: 200px;
     padding: 20px;
     box-sizing: border-box;
     display: flex;
@@ -17,6 +17,7 @@
     max-width: 600px;
     width: 100%;
     text-align: center;
+    transform: translateY(-100px);
 }
 
 h1 {
