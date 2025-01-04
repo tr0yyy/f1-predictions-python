@@ -1,0 +1,24 @@
+.explore-all-card {
+    background-image: url("../../assets/frontend_assets/f1_background.jpg");
+    background-repeat: no-repeat;
+    padding: 15%;
+    width: 100%;
+}
+
+.explore-all {
+    margin-bottom: 20%;
+}
+
+.explore-all h1 {
+    background-color: white;
+    width: 70%;
+    padding-top: -10%;
+    margin-left: 20%;
+    margin-top: -10%;
+}
+
+.explore-all-text {
+    background-color: white;
+    margin-left: 20%;
+    width: 70%;
+}
