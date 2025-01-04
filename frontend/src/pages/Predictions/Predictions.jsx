@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import './Predictions.css';
 
 const Predictions = () => {
-    // Mocked backend data (to be replaced with actual API call)
     const [drivers, setDrivers] = useState([]);
-    const [currentRace, setCurrentRace] = useState('Monaco Grand Prix'); // Example race
+    const [currentRace, setCurrentRace] = useState('Monaco Grand Prix');
 
-    // Form state
     const [predictions, setPredictions] = useState({
         firstPlace: '',
         secondPlace: '',
@@ -19,9 +17,7 @@ const Predictions = () => {
         thirdPlace: [],
     });
 
-    // Load driver data into memory
     useEffect(() => {
-        // Replace with API call to fetch driver data
         const fetchDrivers = async () => {
             const driverList = [
                 'Lewis Hamilton',
@@ -37,7 +33,6 @@ const Predictions = () => {
         fetchDrivers();
     }, []);
 
-    // Handle input changes and filter suggestions
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setPredictions({ ...predictions, [name]: value });
@@ -52,7 +47,6 @@ const Predictions = () => {
         }
     };
 
-    // Handle form submission
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log('Predictions Submitted:', predictions);
