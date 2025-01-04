@@ -34,7 +34,8 @@ async def get_simulation_results():
 async def process_request(current_app, data, repository):
     cached_data = repository.get(query={'session_key': data['session_key']})
     if not cached_data:
-        if config().predictions_url is '':
+        predictions_url = config().predictions_url
+        if not predictions_url:
             current_app.logger.info(f'Will compute equal chances for session {data["session_key"]}')
             data_fetcher_client = RestClient(config().data_fetcher_url)
             drivers = (await data_fetcher_client.get('/api/drivers', {
@@ -50,22 +51,34 @@ async def process_request(current_app, data, repository):
                 } for driver in drivers['data']
             }
         else:
-            current_app.logger.info(f'Will fetch predictions for session {data["session_key"]}')
-            predictions_client = RestClient(config().predictions_url)
+            current_app.logger.info(f'Fetching predictions for session {data["session_key"]}')
+            predictions_client = RestClient(predictions_url)
             predictions = await predictions_client.get('/predictions', {
                 'session_key': data['session_key']
             })
             if 'error' in predictions:
                 return response_error(predictions['error'])
-            drivers_odds = {
-                prediction['driver']: prediction['odds'] for prediction in predictions['data']
-            }
+
+            drivers_odds = {}
+            for prediction in predictions['data']:
+                driver = prediction['driver']
+                if driver not in drivers_odds:
+                    drivers_odds[driver] = {
+                        '1stPlaceCount': 0,
+                        '2ndPlaceCount': 0,
+                        '3rdPlaceCount': 0
+                    }
+                drivers_odds[driver]['1stPlaceCount'] += prediction['odds'].get('1stPlaceCount', 0)
+                drivers_odds[driver]['2ndPlaceCount'] += prediction['odds'].get('2ndPlaceCount', 0)
+                drivers_odds[driver]['3rdPlaceCount'] += prediction['odds'].get('3rdPlaceCount', 0)
+
         result = {
             'session_key': data['session_key'],
             'results': compute_race_result(drivers_odds)
         }
         repository.insert_one(result)
         return response_ok(result)
+
     return response_ok(cached_data)
 
 
