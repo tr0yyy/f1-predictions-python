@@ -6,7 +6,8 @@ CONFIG = None
 
 # for type hints
 class Config:
-    def __init__(self, mongo_url=None):
+    def __init__(self, mongo_url=None, secret_key=None):
+        self.secret_key = secret_key
         self.mongo_url = mongo_url
 
 

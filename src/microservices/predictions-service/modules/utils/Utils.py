@@ -7,20 +7,10 @@ from flask import current_app
 class Utils:
 
     @staticmethod
-    def encode_jwt(user_id: str, username: str, role: str):
-        expiration = datetime.utcnow() + timedelta(hours=1)
-        payload = {
-            "user_id": str(user_id),
-            "username": username,
-            "role": role,
-            "exp": expiration
-        }
-        return jwt.encode(payload, current_app.config["secret_key"], algorithm="HS256")
-
-    @staticmethod
     def decode_jwt(token: str):
         try:
             payload = jwt.decode(token, current_app.config["secret_key"], algorithms=["HS256"])
+            print("Decoded JWT Payload:", payload)
             return payload
         except jwt.ExpiredSignatureError:
             return None

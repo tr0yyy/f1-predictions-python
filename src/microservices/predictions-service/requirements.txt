@@ -7,3 +7,4 @@ aio_pika
 pymongo
 dataclasses
 hypercorn
+jwt
