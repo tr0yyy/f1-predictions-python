@@ -8,6 +8,10 @@ class RaceSimulator extends RestClient {
     async getSimulationResults(params = {}) {
         return await this.get('/api/simulate/results', params, {}, true);
     }
+
+    async getSimulationsResults(params = {}) {
+        return await this.get('/api/simulate/results/many', params, {}, true);
+    }
 }
 
 export default RaceSimulator;

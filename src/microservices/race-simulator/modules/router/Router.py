@@ -31,6 +31,22 @@ async def get_simulation_results():
 
     return response_ok(results)
 
+@router.route("/simulate/results/many", methods=["GET"])
+async def get_simulations_results():
+    session_keys = request.args.get("session_keys")
+
+    if not session_keys:
+        return response_error("Session key required")
+
+    session_repo = SessionRepository()
+    print(session_keys)
+    results = session_repo.get(query={'session_key': {'$in': [int(key) for key in session_keys.split(',')]}})
+
+    if not results:
+        return response_error(f"No simulation results found for sessions {session_keys}.")
+
+    return response_ok({race['session_key']: race for race in results})
+
 async def process_request(current_app, data, repository):
     cached_data = repository.get(query={'session_key': data['session_key']})
     if not cached_data:
