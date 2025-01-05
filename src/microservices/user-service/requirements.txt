@@ -7,6 +7,6 @@ aio_pika
 pymongo
 dataclasses
 hypercorn
-jwt
 bcrypt
 flask-cors
+pyjwt==2.6.0

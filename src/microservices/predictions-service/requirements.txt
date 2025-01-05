@@ -8,3 +8,5 @@ pymongo
 dataclasses
 hypercorn
 jwt
+pyjwt
+flask-cors

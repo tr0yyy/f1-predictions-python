@@ -22,7 +22,7 @@ class Utils:
     @staticmethod
     def decode_jwt(token: str):
         try:
-            payload = jwt.decode(token, current_app.config["secret_key"], algorithms=["HS256"])
+            payload = jwt.decode(token, config["secret_key"], algorithms=["HS256"])
             return payload
         except jwt.ExpiredSignatureError:
             return None

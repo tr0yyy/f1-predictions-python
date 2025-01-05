@@ -77,6 +77,7 @@ services:
       - /var/lib/mongodb-user-service:/data/db
     networks:
       - bridged_network
+
   user-service:
     build:
       context: src/microservices/user-service
@@ -86,6 +87,8 @@ services:
       - "8001:8001"
     environment:
       MONGO_URL: "mongodb://mongodb-user-service:27017"
+      DATA_FETCHER_URL: "http://data-fetcher:8000"
+      SECRET_KEY: "secret_key"
     networks:
       - bridged_network
     depends_on:
@@ -110,6 +113,7 @@ services:
       - "8004:8004"
     environment:
       MONGO_URL: "mongodb://mongodb-predictions-service:27017"
+      SECRET_KEY: "secret_key"
     networks:
       - bridged_network
     depends_on:
