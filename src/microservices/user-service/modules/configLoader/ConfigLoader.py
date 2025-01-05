@@ -22,7 +22,8 @@ def config() -> Config:
             if env_value:
                 CONFIG[key] = env_value
     return Config(
-        mongo_url=CONFIG['mongo_url']
+        mongo_url=CONFIG['mongo_url'],
+        secret_key=CONFIG['secret_key']
     )
 
 

@@ -3,6 +3,8 @@ from datetime import datetime, timedelta
 
 from flask import current_app
 
+from modules.configLoader.ConfigLoader import config
+
 
 class Utils:
 
@@ -15,7 +17,7 @@ class Utils:
             "role": role,
             "exp": expiration
         }
-        return jwt.encode(payload, current_app.config["secret_key"], algorithm="HS256")
+        return jwt.encode(payload, config().secret_key, algorithm="HS256")
 
     @staticmethod
     def decode_jwt(token: str):
