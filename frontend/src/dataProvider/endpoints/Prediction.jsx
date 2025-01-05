@@ -1,12 +1,12 @@
 import RestClient from "./RestClient.jsx";
 
 class Prediction extends RestClient {
-    async login(params = {}) {
-        return await this.post('/api/login', params);
+    async postPredictions(params = {}) {
+        return await this.post('/api/predictions', params);
     }
 
-    async register(params = {}) {
-        return await this.post('/api/register', params);
+    async getPredictions(params = {}) {
+        return await this.get('/api/predictions', params);
     }
 }
 
