@@ -18,7 +18,7 @@ class Mongo(metaclass=Singleton):
 
     def get_db(self):
         client = self.connect()
-        return client.get_database('f1racesimulator')
+        return client.get_database('predictions')
 
     def close(self):
         if self.client:

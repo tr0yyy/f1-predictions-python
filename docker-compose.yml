@@ -81,7 +81,19 @@ services:
         - bridged_network
       depends_on:
         - mongodb-race-simulator
-
+  predictions-service:
+    build:
+      context: src/microservices/predictions-service
+      dockerfile: Dockerfile
+    container_name: predictions-service
+    ports:
+      - "8004:8004"
+    environment:
+      MONGO_URL: "mongodb://mongodb-data-fetcher:27017"
+    networks:
+      - bridged_network
+    depends_on:
+      - mongodb-race-simulator
   nginx:
     image: nginx:latest
     container_name: nginx-reverse-proxy

@@ -1,4 +1,4 @@
 {
-  "mongo_url": "mongodb://172.25.89.192:27018/",
-  "data_fetcher_url": "http://172.25.89.192:8000"
+  "mongo_url": "mongodb://localhost:27017/",
+  "data_fetcher_url": "http://localhost:8000"
 }

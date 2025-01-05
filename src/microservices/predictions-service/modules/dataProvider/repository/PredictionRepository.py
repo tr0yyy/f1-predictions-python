@@ -6,8 +6,8 @@ class PredictionRepository(BaseRepository):
     def __init__(self):
         super().__init__('predictions')
 
-    def get_by_session_key(self, session_key: int):
-        return self.get(query={'session_key': session_key})
+    def get_predictions_by_session(self, session_key):
+        return self.get({"session_key": session_key})
 
     def insert_prediction(self, prediction: Prediction):
-        return self.insert_one(prediction.to_dict())
+        return self.insert_one(prediction.__dict__)
