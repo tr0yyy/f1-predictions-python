@@ -27,7 +27,7 @@ class SecurityManager {
             throw result.error;
         }
         if (result.data.token) {
-            SecurityManager.setToken(result.token);
+            SecurityManager.setToken(result.data.token);
         }
         return result.data.message;
     }

@@ -6,7 +6,7 @@ class Prediction extends RestClient {
     }
 
     async getPredictions(params = {}) {
-        return await this.get('/api/predictions', params);
+        return await this.get('/api/predictions/', params, {}, true);
     }
 }
 

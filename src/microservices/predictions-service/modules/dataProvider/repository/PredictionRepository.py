@@ -9,6 +9,10 @@ class PredictionRepository(BaseRepository):
     def get_predictions_by_user_and_session(self, user_id, session_key):
         return self.get({"user_id": user_id, "session_key": session_key})
 
+    def get_predictions_by_session(self, session_key):
+        return self.get({"session_key": session_key})
+
+
     def insert_prediction(self, prediction: Prediction):
         return self.insert_one(prediction.__dict__)
 

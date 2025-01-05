@@ -14,7 +14,7 @@ class RestClient {
         this._host = value;
     }
 
-    async get(endpoint, params = {}, headers = {}) {
+    async get(endpoint, params = {}, headers = {}, noRetry = false) {
         const baseUrl = this._host + endpoint;
         const queryString = new URLSearchParams(params).toString();
         const url = queryString ? `${baseUrl}?${queryString}` : baseUrl;
@@ -33,13 +33,13 @@ class RestClient {
                 });
                 const json = await response.json();
                 console.log(json);
-                if (json.error && retries) {
+                if (json.error && retries && !noRetry) {
                     await sleep(5000);
                     continue;
                 }
                 return json;
             } catch (error) {
-                if (retries) {
+                if (retries && !noRetry) {
                     await sleep(5000);
                     continue;
                 }

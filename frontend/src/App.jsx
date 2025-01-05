@@ -7,6 +7,7 @@ import Circuits from './pages/Circuits/Circuits';
 import Predictions from './pages/Predictions/Predictions';
 import Home from './pages/Home/Home';
 import LoginPopup from './components/LoginPopup/LoginPopup'
+import Simulations from "./pages/Simulations/Simulations.jsx";
 
 const App = () => {
     const [showLogin, setShowLogin] = useState(false);
@@ -20,7 +21,7 @@ const App = () => {
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/drivers" element={<Drivers />} />
-                        <Route path="/simulations"/>
+                        <Route path="/simulations" element={<Simulations />}/>
                         <Route path="/results"/>
                         <Route path="/predictions" element={<Predictions />} />
                     </Routes>

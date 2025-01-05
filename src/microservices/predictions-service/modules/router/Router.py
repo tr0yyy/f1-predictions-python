@@ -42,15 +42,6 @@ def submit_prediction():
 
 @router.route("/predictions/", methods=["GET"])
 def get_predictions_by_session():
-    token = request.headers.get("Authorization", "").replace("Bearer ", "")
-    if not token:
-        return response_error("Authorization token is required."), 401
-
-    user_data = Utils.decode_jwt(token)
-    if not user_data:
-        return response_error("Invalid or expired token."), 401
-
-    user_id = user_data["user_id"]
     session_key = request.args.get("session_key")
 
     if not session_key:
@@ -61,12 +52,9 @@ def get_predictions_by_session():
     except ValueError:
         return response_error("Invalid session key format."), 400
 
-    predictions = repo.get_predictions_by_user_and_session(user_id, session_key)
+    predictions = repo.get_predictions_by_session(session_key)
 
-    if not predictions:
-        return response_error(f"No predictions found for user {user_id} and session {session_key}."), 404
-
-    return response_ok(predictions)
+    return response_ok(predictions if predictions else []), 200
 
 
 def normalize_args(args):
