@@ -1,7 +1,6 @@
 from datetime import timedelta, datetime
 
 from flask import Blueprint, request
-
 from modules.dataProvider.model.Task import Task, TaskStatus
 from modules.dataProvider.repository.DriverRepository import DriverRepository
 from modules.dataProvider.repository.MeetingRepository import MeetingRepository

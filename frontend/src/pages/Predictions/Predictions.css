@@ -59,7 +59,6 @@ input:focus {
 .suggestions-list {
     list-style: none;
     padding: 0;
-    margin: 10px 0 0;
     border: 1px solid #ccc;
     border-radius: 5px;
     max-height: 150px;
@@ -67,7 +66,7 @@ input:focus {
     background-color: #fff;
     z-index: 10;
     position: absolute;
-    width: calc(100% - 20px);
+    width: calc(50%);
 }
 
 .suggestions-list li {

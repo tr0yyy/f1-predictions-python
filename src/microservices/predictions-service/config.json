@@ -1,0 +1,5 @@
+{
+  "mongo_url": "mongodb://localhost:27017/",
+  "data_fetcher_url": "http://localhost:8000",
+  "secret_key": "secret_key"
+}

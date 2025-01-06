@@ -1,0 +1,11 @@
+requests
+aiohttp
+asyncio
+flask[async]
+pika
+aio_pika
+pymongo
+dataclasses
+hypercorn
+pyjwt==2.6.0
+flask-cors

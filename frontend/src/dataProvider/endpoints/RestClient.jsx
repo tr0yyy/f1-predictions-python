@@ -1,4 +1,5 @@
 import {sleep} from "../../utils/Utils.jsx";
+import SecurityManager from "../securityManager/SecurityManager.jsx";
 
 class RestClient {
     constructor(host) {
@@ -13,7 +14,7 @@ class RestClient {
         this._host = value;
     }
 
-    async get(endpoint, params = {}, headers = {}) {
+    async get(endpoint, params = {}, headers = {}, noRetry = false) {
         const baseUrl = this._host + endpoint;
         const queryString = new URLSearchParams(params).toString();
         const url = queryString ? `${baseUrl}?${queryString}` : baseUrl;
@@ -25,16 +26,20 @@ class RestClient {
             try {
                 const response = await fetch(url, {
                     method: 'GET',
-                    headers: headers
+                    headers: {
+                        ...this.setTokenIntoBearer(),
+                        ...headers
+                    }
                 });
                 const json = await response.json();
-                if (json.error && retries) {
+                console.log(json);
+                if (json.error && retries && !noRetry) {
                     await sleep(5000);
                     continue;
                 }
                 return json;
             } catch (error) {
-                if (retries) {
+                if (retries && !noRetry) {
                     await sleep(5000);
                     continue;
                 }
@@ -43,7 +48,7 @@ class RestClient {
         }
     }
 
-    async post(endpoint, data = {}, headers = {}) {
+    async post(endpoint, data = {}, headers = {}, noRetry = false) {
         const url = this._host + endpoint;
 
         let retries = 3;
@@ -55,23 +60,33 @@ class RestClient {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        ...this.setTokenIntoBearer(),
                         ...headers
                     },
                     body: JSON.stringify(data)
                 });
                 const json = await response.json();
-                if (json.error && retries) {
+                if (json.error && retries && !noRetry) {
                     await sleep(2000);
                     continue;
                 }
                 return json;
             } catch (error) {
-                if (retries) {
+                if (retries && !noRetry) {
                     await sleep(2000);
                     continue;
                 }
                 return {error: error.message};
             }
+        }
+    }
+
+    setTokenIntoBearer() {
+        if (!SecurityManager.isAuthenticated()) {
+            return {};
+        }
+        return {
+            'Authorization': `Bearer ${SecurityManager.getToken()}`
         }
     }
 }

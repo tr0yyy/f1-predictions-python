@@ -76,7 +76,7 @@ const Drivers = () => {
               {races.map((r) => (
                 <Dropdown.Item
                   key={r.session_key}
-                  onClick={() => setRace(r)}  // <-- Trigger setRace on click
+                  onClick={() => setRace(r)}
                 >
                   {`${r.circuit_short_name} - (${r.country_code})`}
                 </Dropdown.Item>
