@@ -28,7 +28,7 @@
     "eslint-plugin-react-refresh": "^0.4.16",
     "globals": "^15.13.0",
     "react-bootstrap": "^2.10.7",
-    "vite": "^6.0.3",
-    "react-scripts": "^5.0.1"
+    "react-scripts": "^5.0.1",
+    "vite": "^6.0.3"
   }
 }

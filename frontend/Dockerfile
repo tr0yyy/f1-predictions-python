@@ -6,11 +6,15 @@ COPY package*.json ./
 
 RUN npm install
 
+ENV VITE_BACKEND_PROXY=http://f1.prediction.docker:8080
+
 COPY . .
 
 RUN npm run build
 
 FROM nginx:stable-alpine
+
+RUN apk add curl
 
 COPY --from=build /app/dist /usr/share/nginx/html
 

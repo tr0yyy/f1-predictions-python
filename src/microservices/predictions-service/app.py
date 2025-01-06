@@ -6,11 +6,14 @@ from flask_cors import CORS
 
 from modules.configLoader.ConfigLoader import config
 from modules.router.Router import router
+from modules.router.Health import health
 
 app = Flask(__name__)
 app.register_blueprint(router)
+app.register_blueprint(health)
 app.config["secret_key"] = config().secret_key
 CORS(app)
+
 
 async def run_flask():
     config = Config()

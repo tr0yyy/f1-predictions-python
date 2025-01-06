@@ -1,0 +1,306 @@
+version: '3.8'
+
+networks:
+  bridged_network:
+    driver: overlay
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: password
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - bridged_network
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.role == manager
+    healthcheck:
+      test: [ "CMD", "rabbitmqctl", "status" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  mongodb-data-fetcher:
+    image: mongo:latest
+    container_name: mongodb-data-fetcher
+    ports:
+      - "27017:27017"
+    volumes:
+      - /var/lib/mongodb-data-fetcher:/data/db
+    networks:
+      - bridged_network
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.role == manager
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  data-fetcher:
+    image: tr0yyy/f1-prediction-python-data-fetcher
+    build:
+      context: src/microservices/data-fetcher
+      dockerfile: Dockerfile
+    container_name: data-fetcher
+    ports:
+      - "8000:8000"
+    environment:
+      RABBITMQ_URL: "amqp://admin:password@rabbitmq:5672"
+      RABBITMQ_QUEUE: "f1.data.fetcher"
+      MONGO_URL: "mongodb://mongodb-data-fetcher:27017"
+    networks:
+      - bridged_network
+    depends_on:
+      - rabbitmq
+      - mongodb-data-fetcher
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+      update_config:
+        parallelism: 1
+        delay: 10s
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "localhost:8000/health/" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  mongodb-race-simulator:
+    image: mongo:latest
+    container_name: mongodb-race-simulator
+    ports:
+      - "27018:27017"
+    volumes:
+      - /var/lib/mongodb-race-simulator:/data/db
+    networks:
+      - bridged_network
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.role == manager
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  race-simulator:
+    image: tr0yyy/f1-prediction-python-race-simulator
+    build:
+      context: src/microservices/race-simulator
+      dockerfile: Dockerfile
+    container_name: race-simulator
+    ports:
+      - "8002:8002"
+    environment:
+      MONGO_URL: "mongodb://mongodb-race-simulator:27017"
+    networks:
+      - bridged_network
+    depends_on:
+      - mongodb-race-simulator
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+      update_config:
+        parallelism: 1
+        delay: 10s
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "localhost:8002/health/" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+
+  mongodb-user-service:
+    image: mongo:latest
+    container_name: mongodb-user-service
+    ports:
+      - "27019:27017"
+    volumes:
+      - /var/lib/mongodb-user-service:/data/db
+    networks:
+      - bridged_network
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.role == manager
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  user-service:
+    image: tr0yyy/f1-prediction-python-user-service
+    build:
+      context: src/microservices/user-service
+      dockerfile: Dockerfile
+    container_name: user-service
+    ports:
+      - "8001:8001"
+    environment:
+      MONGO_URL: "mongodb://mongodb-user-service:27017"
+      DATA_FETCHER_URL: "http://data-fetcher:8000"
+      SECRET_KEY: "secret_key"
+    networks:
+      - bridged_network
+    depends_on:
+      - mongodb-user-service
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+      update_config:
+        parallelism: 1
+        delay: 10s
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "localhost:8001/health/" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  mongodb-predictions-service:
+    image: mongo:latest
+    container_name: mongodb-predictions-service
+    ports:
+      - "27020:27017"
+    volumes:
+      - /var/lib/mongodb-predictions-service:/data/db
+    networks:
+      - bridged_network
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.role == manager
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  predictions-service:
+    image: tr0yyy/f1-prediction-python-predictions-service
+    build:
+      context: src/microservices/predictions-service
+      dockerfile: Dockerfile
+    container_name: predictions-service
+    ports:
+      - "8004:8004"
+    environment:
+      MONGO_URL: "mongodb://mongodb-predictions-service:27017"
+      SECRET_KEY: "secret_key"
+    networks:
+      - bridged_network
+    depends_on:
+      - mongodb-predictions-service
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+      update_config:
+        parallelism: 1
+        delay: 10s
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "localhost:8004/health/" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  nginx-frontend:
+    image: tr0yyy/f1-prediction-python-nginx-frontend
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    container_name: nginx-frontend
+    environment:
+      VITE_BACKEND_PROXY: "http://nginx-frontend:8080"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    networks:
+      - bridged_network
+    depends_on:
+      - race-simulator
+      - data-fetcher
+      - user-service
+      - predictions-service
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "localhost" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s

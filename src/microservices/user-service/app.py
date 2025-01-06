@@ -1,17 +1,19 @@
 from flask import Flask
 import asyncio
-from threading import Thread
 from hypercorn.asyncio import serve
 from hypercorn.config import Config
 from flask_cors import CORS
 
 from modules.configLoader.ConfigLoader import config
 from modules.router.Router import router
+from modules.router.Health import health
 
 app = Flask(__name__)
 app.register_blueprint(router)
+app.register_blueprint(health)
 CORS(app)
 app.config["secret_key"] = config().secret_key
+
 
 async def run_flask():
     config = Config()
