@@ -5,9 +5,11 @@ from hypercorn.config import Config
 from flask_cors import CORS
 
 from modules.router.Router import router
+from modules.router.Health import health
 
 app = Flask(__name__)
 app.register_blueprint(router)
+app.register_blueprint(health)
 CORS(app)
 
 
