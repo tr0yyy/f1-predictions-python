@@ -39,6 +39,7 @@ services:
       RABBITMQ_URL: "amqp://admin:password@rabbitmq:5672"
       RABBITMQ_QUEUE: "f1.data.fetcher"
       MONGO_URL: "mongodb://mongodb-data-fetcher:27017"
+      PORT: 8000
     networks:
       - bridged_network
     depends_on:
@@ -65,6 +66,9 @@ services:
       - "8002:8002"
     environment:
       MONGO_URL: "mongodb://mongodb-race-simulator:27017"
+      DATA_FETCHER_URL: "http://data-fetcher:8000"
+      PREDICTIONS_URL: "http://predictions-service:8004"
+      PORT: 8002
     networks:
       - bridged_network
     depends_on:
@@ -92,6 +96,7 @@ services:
       MONGO_URL: "mongodb://mongodb-user-service:27017"
       DATA_FETCHER_URL: "http://data-fetcher:8000"
       SECRET_KEY: "secret_key"
+      PORT: 8001
     networks:
       - bridged_network
     depends_on:
@@ -118,6 +123,7 @@ services:
     environment:
       MONGO_URL: "mongodb://mongodb-predictions-service:27017"
       SECRET_KEY: "secret_key"
+      PORT: 8004
     networks:
       - bridged_network
     depends_on:
@@ -129,6 +135,8 @@ services:
       dockerfile: Dockerfile
     container_name: nginx-frontend
     restart: on-failure
+    environment:
+      VITE_BACKEND_PROXY: "http://nginx-frontend:8080"
     ports:
       - "80:80"
       - "8080:8080"
