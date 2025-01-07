@@ -56,7 +56,7 @@ services:
   data-fetcher:
     image: tr0yyy/f1-prediction-python-data-fetcher
     build:
-      context: src/microservices/data-fetcher
+      context: ../../src/microservices/data-fetcher
       dockerfile: Dockerfile
     container_name: data-fetcher
     ports:
@@ -65,6 +65,7 @@ services:
       RABBITMQ_URL: "amqp://admin:password@rabbitmq:5672"
       RABBITMQ_QUEUE: "f1.data.fetcher"
       MONGO_URL: "mongodb://mongodb-data-fetcher:27017"
+      PORT: 8000
     networks:
       - bridged_network
     depends_on:
@@ -117,13 +118,16 @@ services:
   race-simulator:
     image: tr0yyy/f1-prediction-python-race-simulator
     build:
-      context: src/microservices/race-simulator
+      context: ../../src/microservices/race-simulator
       dockerfile: Dockerfile
     container_name: race-simulator
     ports:
       - "8002:8002"
     environment:
       MONGO_URL: "mongodb://mongodb-race-simulator:27017"
+      DATA_FETCHER_URL: "http://data-fetcher:8000"
+      PREDICTIONS_URL: "http://predictions-service:8004"
+      PORT: 8002
     networks:
       - bridged_network
     depends_on:
@@ -176,7 +180,7 @@ services:
   user-service:
     image: tr0yyy/f1-prediction-python-user-service
     build:
-      context: src/microservices/user-service
+      context: ../../src/microservices/user-service
       dockerfile: Dockerfile
     container_name: user-service
     ports:
@@ -185,6 +189,7 @@ services:
       MONGO_URL: "mongodb://mongodb-user-service:27017"
       DATA_FETCHER_URL: "http://data-fetcher:8000"
       SECRET_KEY: "secret_key"
+      PORT: 8001
     networks:
       - bridged_network
     depends_on:
@@ -236,7 +241,7 @@ services:
   predictions-service:
     image: tr0yyy/f1-prediction-python-predictions-service
     build:
-      context: src/microservices/predictions-service
+      context: ../../src/microservices/predictions-service
       dockerfile: Dockerfile
     container_name: predictions-service
     ports:
@@ -244,6 +249,7 @@ services:
     environment:
       MONGO_URL: "mongodb://mongodb-predictions-service:27017"
       SECRET_KEY: "secret_key"
+      PORT: 8004
     networks:
       - bridged_network
     depends_on:
@@ -272,7 +278,7 @@ services:
   nginx-frontend:
     image: tr0yyy/f1-prediction-python-nginx-frontend
     build:
-      context: frontend
+      context: ../../frontend
       dockerfile: Dockerfile
     container_name: nginx-frontend
     environment:

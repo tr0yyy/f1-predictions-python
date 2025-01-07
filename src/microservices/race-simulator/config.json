@@ -3,5 +3,6 @@
   "rabbitmq_queue": "f1.race.simulator",
   "mongo_url": "mongodb://localhost:27018/",
   "predictions_url": "http://localhost:8004",
-  "data_fetcher_url": "http://localhost:8000"
+  "data_fetcher_url": "http://localhost:8000",
+  "port": 8002
 }
