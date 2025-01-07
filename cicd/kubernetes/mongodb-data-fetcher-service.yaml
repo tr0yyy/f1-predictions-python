@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-data-fetcher
+spec:
+  selector:
+    app: mongodb-data-fetcher
+  ports:
+    - port: 27017
+      targetPort: 27017
+  type: ClusterIP
+  
