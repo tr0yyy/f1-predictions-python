@@ -4,9 +4,17 @@ import os
 CONFIG = None
 
 
-# for type hints
 class Config:
     def __init__(self, rabbitmq_url=None, rabbitmq_queue=None, mongo_url=None, predictions_url=None, data_fetcher_url=None, port=None):
+        """
+        Config class for the application
+        rabbitmq_url: str - the url for the rabbitmq
+        rabbitmq_queue: str - the queue name for the rabbitmq
+        mongo_url: str - the url for the mongo database
+        predictions_url: str - the url for the predictions service
+        data_fetcher_url: str - the url for the data fetcher service
+        port: int - the port on which the application will run
+        """
         self.rabbitmq_url = rabbitmq_url
         self.rabbitmq_queue = rabbitmq_queue
         self.mongo_url = mongo_url

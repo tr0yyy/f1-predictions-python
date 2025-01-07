@@ -6,7 +6,7 @@ import subprocess
 
 def build_image(path, tag):
     print(f"Building Docker image for [{tag}]...")
-    subprocess.run(["docker", "build", "-t", tag, path], check=True)
+    subprocess.run(["docker", "build", "--no-cache", "-t", tag, path], check=True, env={"DOCKER_BUILDKIT": "1"})
 
 
 def push_image(path, tag):

@@ -282,10 +282,9 @@ services:
       dockerfile: Dockerfile
     container_name: nginx-frontend
     environment:
-      VITE_BACKEND_PROXY: "http://nginx-frontend:8080"
+      VITE_BACKEND_PROXY: "http://nginx-frontend:9080/service"
     ports:
       - "80:80"
-      - "8080:8080"
     networks:
       - bridged_network
     depends_on:

@@ -6,6 +6,13 @@ CONFIG = None
 
 # for type hints
 class Config:
+    """
+    Config class for the application
+    mongo_url: str - the url for the mongo database
+    data_fetcher_url: str - the url for the data fetcher service
+    secret_key: str - the secret key for the application
+    port: int - the port on which the application will run
+    """
     def __init__(self, mongo_url=None, data_fetcher_url=None, secret_key=None, port=None):
         self.mongo_url = mongo_url
         self.data_fetcher_url = data_fetcher_url
