@@ -1,5 +1,6 @@
 {
   "rabbitmq_url": "amqp://admin:password@localhost:5672/",
   "rabbitmq_queue": "f1.data.fetcher",
-  "mongo_url": "mongodb://localhost:27017/"
+  "mongo_url": "mongodb://localhost:27017/",
+  "port": 8000
 }

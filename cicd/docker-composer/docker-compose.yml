@@ -29,7 +29,7 @@ services:
 
   data-fetcher:
     build:
-      context: src/microservices/data-fetcher
+      context: ../../src/microservices/data-fetcher
       dockerfile: Dockerfile
     container_name: data-fetcher
     restart: on-failure
@@ -57,7 +57,7 @@ services:
 
   race-simulator:
     build:
-      context: src/microservices/race-simulator
+      context: ../../src/microservices/race-simulator
       dockerfile: Dockerfile
     container_name: race-simulator
     restart: on-failure
@@ -82,7 +82,7 @@ services:
 
   user-service:
     build:
-      context: src/microservices/user-service
+      context: ../../src/microservices/user-service
       dockerfile: Dockerfile
     container_name: user-service
     restart: on-failure
@@ -109,7 +109,7 @@ services:
 
   predictions-service:
     build:
-      context: src/microservices/predictions-service
+      context: ../../src/microservices/predictions-service
       dockerfile: Dockerfile
     container_name: predictions-service
     restart: on-failure
@@ -125,7 +125,7 @@ services:
 
   nginx-frontend:
     build:
-      context: frontend
+      context: ../../frontend
       dockerfile: Dockerfile
     container_name: nginx-frontend
     restart: on-failure

@@ -6,12 +6,13 @@ CONFIG = None
 
 # for type hints
 class Config:
-    def __init__(self, rabbitmq_url=None, rabbitmq_queue=None, mongo_url=None, predictions_url=None, data_fetcher_url=None):
+    def __init__(self, rabbitmq_url=None, rabbitmq_queue=None, mongo_url=None, predictions_url=None, data_fetcher_url=None, port=None):
         self.rabbitmq_url = rabbitmq_url
         self.rabbitmq_queue = rabbitmq_queue
         self.mongo_url = mongo_url
         self.predictions_url = predictions_url
         self.data_fetcher_url = data_fetcher_url
+        self.port = port
 
 
 def config() -> Config:
@@ -29,7 +30,8 @@ def config() -> Config:
         rabbitmq_queue=CONFIG['rabbitmq_queue'],
         mongo_url=CONFIG['mongo_url'],
         predictions_url=CONFIG['predictions_url'],
-        data_fetcher_url=CONFIG['data_fetcher_url']
+        data_fetcher_url=CONFIG['data_fetcher_url'],
+        port=CONFIG['port']
     )
 
 

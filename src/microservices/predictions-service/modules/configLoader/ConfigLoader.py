@@ -6,10 +6,11 @@ CONFIG = None
 
 # for type hints
 class Config:
-    def __init__(self, mongo_url=None, data_fetcher_url=None, secret_key=None):
+    def __init__(self, mongo_url=None, data_fetcher_url=None, secret_key=None, port=None):
         self.mongo_url = mongo_url
         self.data_fetcher_url = data_fetcher_url
         self.secret_key = secret_key
+        self.port = port
 
 
 def config() -> Config:
@@ -25,7 +26,8 @@ def config() -> Config:
     return Config(
         mongo_url=CONFIG['mongo_url'],
         data_fetcher_url=CONFIG['data_fetcher_url'],
-        secret_key=CONFIG['secret_key']
+        secret_key=CONFIG['secret_key'],
+        port=CONFIG['port']
     )
 
 
