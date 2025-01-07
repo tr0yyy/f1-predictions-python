@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: data-fetcher
+spec:
+  selector:
+    app: data-fetcher
+  ports:
+    - port: 8000
+      targetPort: 8000
+  type: ClusterIP
+  

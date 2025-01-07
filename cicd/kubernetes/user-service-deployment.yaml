@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+  labels:
+    app: user-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      name: user-service
+      labels:
+        app: user-service
+    spec:
+      containers:
+        - name: user-service
+          image: tr0yyy/f1-prediction-python-user-service
+          ports:
+              - containerPort: 8001
+          env:
+            - name: DATA_FETCHER_URL
+              value: "http://data-fetcher:8000"
+            - name: MONGO_URL
+              value: "mongodb://mongodb-user-service:27017"
+            - name: PORT
+              value: "8001"
+            - name: SECRET_KEY
+              value: "secret_key"
+          livenessProbe:
+            httpGet:
+              path: /health/
+              port: 8001
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"

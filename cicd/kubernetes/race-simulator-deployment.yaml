@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: race-simulator
+  labels:
+    app: race-simulator
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: race-simulator
+  template:
+    metadata:
+      name: race-simulator
+      labels:
+        app: race-simulator
+    spec:
+      containers:
+        - name: race-simulator
+          image: tr0yyy/f1-prediction-python-race-simulator
+          ports:
+              - containerPort: 8002
+          env:
+            - name: DATA_FETCHER_URL
+              value: "http://data-fetcher:8000"
+            - name: MONGO_URL
+              value: "mongodb://mongodb-race-simulator:27017"
+            - name: PORT
+              value: "8002"
+            - name: PREDICTIONS_URL
+              value: "http://predictions-service:8004"
+          livenessProbe:
+            httpGet:
+              path: /health/
+              port: 8002
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"

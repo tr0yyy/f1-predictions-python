@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: predictions-service
+  labels:
+    app: predictions-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: predictions-service
+  template:
+    metadata:
+      name: predictions-service
+      labels:
+        app: predictions-service
+    spec:
+      containers:
+        - name: predictions-service
+          image: tr0yyy/f1-prediction-python-predictions-service
+          ports:
+              - containerPort: 8004
+          env:
+            - name: SECRET_KEY
+              value: "secret_key"
+            - name: MONGO_URL
+              value: "mongodb://mongodb-predictions-service:27017"
+            - name: PORT
+              value: "8004"
+          livenessProbe:
+            httpGet:
+              path: /health/
+              port: 8004
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
