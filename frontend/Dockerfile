@@ -6,7 +6,7 @@ COPY package*.json ./
 
 RUN npm install
 
-ENV VITE_BACKEND_PROXY=http://f1.prediction.docker:8080
+ENV VITE_BACKEND_PROXY=http://f1.prediction.docker/service
 
 COPY . .
 
@@ -21,6 +21,5 @@ COPY --from=build /app/dist /usr/share/nginx/html
 COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
-EXPOSE 8080
 
 CMD ["nginx", "-g", "daemon off;"]
